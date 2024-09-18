@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eliza Chatbot</title>
+</head>
+<body>
+    <h1>Eliza, Your Virtual Therapist</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Say something..." />
+    <button id="sendButton">Send</button>
+
+    <script>
+        document.getElementById('sendButton').onclick = function() {
+            var userMessage = document.getElementById('userInput').value;
+            var chatbox = document.getElementById('chatbox');
+
+            // Display the user's message
+            chatbox.innerHTML += "<p><b>You:</b> " + userMessage + "</p>";
+
+            // Send the user's message to Flask
+            fetch('/get', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'msg=' + encodeURIComponent(userMessage)
+            })
+            .then(response => response.text())
+            .then(botResponse => {
+                // Display chatbot's response
+                chatbox.innerHTML += "<p><b>Eliza:</b> " + botResponse + "</p>";
+                document.getElementById('userInput').value = '';  // Clear the input field
+            });
+        };
+    </script>
+</body>
+</html>
